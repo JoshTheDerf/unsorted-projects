@@ -1,0 +1,72 @@
+<!-- Load muon if not already loaded -->
+<link rel="import" href="../muon/muon.html"/>
+
+<!-- Load script dependencies -->
+<script src="./lib/shadowify.js"></script>
+<script src="./lib/zepto.min.js"></script>
+
+<muon-element name="muon-shadow-icons">
+  <!-- Usage: <muon-shadow-icons src="PATH/TO/ICON/CSS" class-partial="fa" new-deep/> -->
+  <script>
+    (function() {
+      var fileCache = {
+        
+      };
+      
+      var processSheet = function(src) {
+        var base64id = "muon-shadow-icon-"+btoa(src);
+        var cachedText = fileCache[src];
+        
+        var useElement = null;
+        if(!document.getElementById(base64id)) {
+          useElement = document.createElement('style');
+          useElement.id = base64id;
+          document.head.appendChild(useElement);
+        } else {
+          useElement = document.getElementById(base64id);
+        }
+        useElement.innerHTML = cachedText;
+      }
+      
+      var loadSheet = function(src, partial, deep) {
+        
+        if(!fileCache[src]) {
+          fileCache[src] = true;
+          $.get(src, function(res) {
+            // Woo for normalization.
+            var path = src;
+            if(Shadowify._isRelative(src)) {
+              path = Shadowify._basename(window.location.pathname)+src;
+            }
+            
+            fileCache[src] = Shadowify(res, partial, deep, path);
+            processSheet(src);
+          })
+        } else {
+          processSheet(src);
+        }
+      }
+      
+      muon("muon-shadow-icons", {
+        muonCreated: function() {
+          this.src = this.getAttribute('src');
+          if(!this.src) return;
+          this.classPartial = this.getAttribute('class-partial') ? this.getAttribute('class-partial') : "fa";
+          this.useNewDeep = this.hasAttribute('new-deep');
+          
+          loadSheet(this.src, this.classPartial, this.useNewDeep);
+        },
+        muonAttrChanged: function(attr, oldValue, newValue) {
+          if(attr == "src") {
+            this.src = newValue;
+          } else if(attr == "class-partial") {
+            this.classPartial = newValue;
+          } else if(attr == "new-deep") {
+            this.useNewDeep = newValue;
+          }
+          loadSheet(this.src, this.classPartial, this.useNewDeep);
+        }
+      });
+    })();
+  </script>
+</muon-element>

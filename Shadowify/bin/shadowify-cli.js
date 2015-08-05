@@ -28,14 +28,16 @@
 var fs = require("fs");
 var path = require("path");
 var argv = require("minimist")(process.argv.slice(2));
-var shadowify = require("../lib/shadowify");
+var Shadowify = require("../lib/shadowify");
 
 var exitWithHelp = function() {
   console.log([
   "    Usage: shadowify [--prefix=fa] /PATH/TO/CSS/FILE /PATH/TO/OUTPUT/CSS/FILE",
   "    Options:",
-  "        -p, --prefix (fa)    Prefix (partial) class name. Expects icons to be named with [PREFIX]-ICONNAME",
-  "        -d, --newdeep (false) Use the new >>> style deep selector instead of /deep/ ",
+  "        -p, --prefix (fa)      Prefix (partial) class name. Expects icons to be named with [PREFIX]-ICONNAME",
+  "        -n, --newdeep          Use the new >>> style deep selector instead of /deep/ ",
+  "        -b, --base-path (null) Path to prepend to URLs in the stylesheet. Use at your own risk.",
+  "        -d, --debug            Turn on debug mode.",
   ].join("\n"));
   process.exit(1);
 }
@@ -51,6 +53,8 @@ var inputPath,
     outputText,
     classPartial,
     deepCombinator,
+    basePath,
+    debugMode;
 
 inputPath = (function() {
   if(argv._[0] && typeof argv._[0] == "string") {
@@ -81,15 +85,30 @@ inputText = (function() {
 })();
 
 classPartial = argv.prefix ? argv.prefix : argv.p ? argv.p : "fa";
-deepCombinator = !!argv.newdeep ? ">>>" : !!argv.d ? ">>>" : "/deep/";
+deepCombinator = !!argv.newdeep ? ">>>" : !!argv.n ? ">>>" : "/deep/";
+
+basePath = (function() {
+  if(typeof argv['base-path'] == "string") {
+    return argv['base-path'];
+  } else if (typeof argv.b == "string") {
+    return argv.b;
+  } else if (!!argv['base-path'] || !!argv.b) {
+    return process.cwd;
+  } else {
+    return null;
+  }
+})();
+
+Shadowify.DEBUG = !!argv.debug ? true : argv.d ? true : false;
 
 console.log([
   "    Options:",
-  "         Class Partial: "+classPartial,
+  "         Class Partial:   "+classPartial,
   "         Deep Combinator: "+deepCombinator,
+  "         URL Prefix:      "+(basePath ? basePath : "[NONE]"),
 ].join("\n"));
 
-outputText = shadowify(inputText, classPartial, deepCombinator);
+outputText = Shadowify(inputText, classPartial, deepCombinator, basePath);
 
 try {
   fs.writeFileSync(path.resolve(outputPath), outputText);

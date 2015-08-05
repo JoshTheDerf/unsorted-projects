@@ -1,0 +1,57 @@
+<link rel="import" href="../muon/muon.html"/>
+<script src="./lib/ractive.js"></script>
+
+<muon-element name="muon-button" ractive shadow>
+  <template>
+    <style>
+      .contentWrapper {
+        display: inline-block;
+        width: auto;
+        background-color: #446060;
+        border: 1px solid #3B6161;
+        border-radius: 3px;
+        padding: 5px;
+        color: #EEE;
+        font-family: sans-serif;
+        font-weight: bold;
+        line-height: 1.5em;
+        box-shadow: 0px 0px 1px #222;
+        transition: all 200ms;
+        cursor: default;
+        -webkit-user-select: none;
+      }
+      
+      .contentWrapper:hover {
+        background-color: #4C7373;
+      }
+      
+      .contentWrapper:active {
+        background-color: #3A5757;
+      }
+    </style>
+    <div class="contentWrapper">
+      {{#if leftIcon}}
+        <i class="{{leftIcon}}"></i>
+      {{/if}}
+      {{#if text}}
+        <span class="text">{{text}}</span>
+      {{/if}}
+      {{#if rightIcon}}
+        <i class="{{rightIcon}}"></i>
+      {{/if}}
+    </div>
+  </template>
+  <script>
+    muon("muon-button", {
+      ractiveOptions: {},
+      data: {
+        leftIcon: "fa fa-user",
+        text: "Button",
+        rightIcon: "fa fa-times",
+      },
+      muonCreated: function() {
+        this._Ractive.reset(this.data);
+      }
+    });
+  </script>
+</muon-element>

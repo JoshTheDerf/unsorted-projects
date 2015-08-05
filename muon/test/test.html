@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="import" href="../../muon-elements/muon-button.html"/>
+		<link rel="import" href="../../muon-elements/muon-svg.html"/>
+		<link rel="import" href="../../muon-elements/muon-shadow-icons.html"/>
+		<style>
+			.muonsvg .test {
+				stroke: #006600 !important;
+				fill  : #00cc00 !important;
+				transition: all 400ms;
+			}
+			.muonsvg .test:hover {
+				fill: #F00 !important;
+			}
+			
+			.muonsvg .test:active {
+				fill: #FFF !important;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Inject shadow icons -->
+		<muon-shadow-icons src="../fa/font-awesome.min.css" class-partial="fa"></muon-shadow-icons>
+		
+		<!-- Test standard controls -->
+		<div class="controls">
+			<muon-button>
+			</muon-button>
+		</div>
+		<!-- SVG Testing -->
+		<div class="svgs">
+			<muon-svg src="./semicolon.svg" class="muonsvg"></muon-svg>
+			<muon-svg class="muonsvg" id="muonsvgchange"></muon-svg>
+			<muon-svg src="./logo-old.svg" class="muonsvg"></muon-svg>
+		</div>
+		
+		<script>
+		setTimeout(function() {
+			document.getElementById("muonsvgchange").src = "./semicolon.svg";
+		}, 1000);
+		</script>
+	</body>
+</html>
