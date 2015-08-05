@@ -1,0 +1,28 @@
+{
+  "name": "shadowify",
+  "description": "A converter for standard CSS fonts to force them to pierce the Shadow DOM.",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": "Joshua Bemenderfer",
+  "bugs": {
+    "url": "https://github.com/tribex/shadowify/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tribex/shadowify.git"
+  },
+  "main": "./bin/shadowify.js",
+  "scripts": {
+    "test": "./test/build-tests.sh && xdg-open ./test/index.html & exit 0"
+  },
+  "preferGlobal": "true",
+  "directories": {
+    "bin": "./bin"
+  },
+  "bin": {
+    "shadowify": "./bin/shadowify.js"
+  },
+  "dependencies": {
+    "minimist": "^1.1.2"
+  }
+}

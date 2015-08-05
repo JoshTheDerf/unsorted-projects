@@ -1,0 +1,163 @@
+<!-- 
+ COPYRIGHT (c) 2015 Joshua Bemenderfer
+
+ MIT License
+
+ Permission is hereby granted, free of charge, to any person obtaining
+ a copy of this software and associated documentation files (the
+ "Software"), to deal in the Software without restriction, including
+ without limitation the rights to use, copy, modify, merge, publish,
+ distribute, sublicense, and/or sell copies of the Software, and to
+ permit persons to whom the Software is furnished to do so, subject to
+ the following conditions:
+
+ The above copyright notice and this permission notice shall be
+ included in all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+-->
+
+<!-- Don't read this file. Inside you will find only horror. Don't code when frazzled at 9:00 P.M. -->
+<!-- I like inline conditionals. Don't hurt me please! -->
+
+
+
+<script>
+var muon = function(name, properties) {
+  if(muon._uncreatedElements[name]) {
+    var elementDefinition = muon._uncreatedElements[name].elementDefinition;
+    var template = muon._uncreatedElements[name].template;
+    var prototype = Object.create(HTMLElement.prototype);
+    
+    var keys = properties ? Object.keys(properties) : null;
+    if(!!keys) {
+      for(var i = 0; i < keys.length; i++) {
+        prototype[keys[i]] = properties[keys[i]];
+      }
+    }
+    
+    prototype.muonTemplate = template;
+    prototype.isRactive = !!elementDefinition.attributes.getNamedItem("ractive");
+    prototype.isShadow = !!elementDefinition.attributes.getNamedItem("shadow");
+    prototype.createdCallback = function() {
+      var skipCreate = false;
+      if(this.muonPreCreated) skipCreate = this.muonPreCreated();
+      
+      if(!skipCreate && this.muonTemplate) {
+        if(this.isRactive) {
+          //Set up a ractive.js template.
+          if(Ractive) {
+            var opts = this.ractiveOptions ? Object.create(this.ractiveOptions) : {};
+            var dataPath = this.attributes.getNamedItem("ractive-data-path");
+            
+            if(this.isShadow) {
+              opts.el = opts.el ? opts.el : this.createShadowRoot();
+            } else {
+              opts.el = opts.el ? opts.el : this;
+            }
+            opts.template = opts.template ? opts.template : this.muonTemplate.innerHTML;
+            if(dataPath) {
+              var refObject = muon.stringToObjRef(dataPath.nodeValue);
+              // Yes, I know nested inline conditionals are bad. :C
+              opts.data = refObject ? refObject : opts.data ? opts.data : this;
+            } else {
+              opts.data = opts.data ? opts.data : this;
+            }
+            opts.magic = opts.magic ? opts.magic : true;
+            
+            this._Ractive = new Ractive(opts);
+          }
+        } else if(this.isShadow) {
+          //Clone the template with a shadow root.
+          var shadowRoot = this.createShadowRoot();
+          shadowRoot.appendChild(this.muonTemplate.content.cloneNode(true));
+        } else {
+          // Clone the template without a shadow root.
+          this.appendChild(this.muonTemplate.content.cloneNode(true));
+        }
+      }
+      if(this.muonCreated) this.muonCreated();
+    }
+    
+    prototype.attachedCallback = function() {
+      if(this.muonAttached) this.muonAttached();
+    }
+    prototype.detatchedCallback = function() {
+      if(this.muonDetatched) this.muonDetatched();
+    }
+    prototype.attributeChangedCallback = function(attrName, oldVal, newVal) {
+      if(this.muonAttrChanged) this.muonAttrChanged(attrName, oldVal, newVal);
+    }
+    
+    muon.elements[name] = document.registerElement(name, {
+      prototype: prototype
+    });
+    
+    muon._uncreatedElements[name] = null;
+    delete muon._uncreatedElements[name];
+  }
+};
+
+muon.elements = {};
+muon._uncreatedElements = {};
+
+(function () {
+  //-- Utilities --//
+  muon.getElementFromChildren = function(name, children) {
+    for(var i = 0; i < children.length; i++) {
+      if(children[i].nodeName == name.toUpperCase())
+      return children[i];
+    }
+    
+    return null;
+  }
+  
+  // http://stackoverflow.com/a/7583788/3673077 's implementation was better than my own.
+  muon.stringToObjRef = function(str) {
+    var keys = str.split('.'),
+    obj = window;
+    for (var i=0; i < keys.length; i++) {
+      if (keys[i] in obj) {
+        obj = obj[keys[i]];
+      } else {
+        return;
+      }
+    }
+    return obj;
+  }
+  
+  var muonElementProto = Object.create(HTMLElement.prototype);
+  muonElementProto.createdCallback = function() {
+    muon.createMuonElement(this);
+  }
+  
+  muon.elements.element = document.registerElement('muon-element', {
+    prototype: muonElementProto
+  });
+  
+  muon.createMuonElement = function(elementDefinition) {
+    var nameAttr = elementDefinition.attributes.getNamedItem('name');
+    var noScriptAttr = elementDefinition.attributes.getNamedItem('noscript');
+    
+    var template = muon.getElementFromChildren("template", elementDefinition.children);
+    
+    if(!!nameAttr) {
+      var elementName = nameAttr.nodeValue;
+      muon._uncreatedElements[elementName] = {elementDefinition: elementDefinition, template: template};
+      
+      if(!!noScriptAttr) {
+        muon(elementName);
+      }
+    } else {
+      return false;
+    }
+  }
+  
+})();
+</script>

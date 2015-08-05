@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="./fa/font-awesome-converted.css"/>
+		<link rel="stylesheet" type="text/css" href="./ionic/ionicons-converted.css"/>
+	</head>
+	<style>
+		.control, * /deep/ .control {
+			background-color: rgb(100,200,80);
+		}
+		
+		.control-inner::before, * /deep/ .control-inner::before {
+			content: "Control Functional";
+			font-weight: bold;
+			font-style: normal;
+			color: #FFF;
+		}
+	</style>
+	<body>
+		<div>
+			<h3>Control</h3>
+			<p>Light DOM: <i class="control control-inner"></i></p>
+			<p>Shadow DOM: <span id="controlShadowRoot"></span></p>
+		</div>
+		<div>
+			<h3>Test FontAwesome</h3>
+			<p>Light DOM: <i class="fa fa-user"></i></p>
+			<p>Shadow DOM: <span id="fontawesomeShadowRoot"></span></p>
+		<div>
+			<h3>Test Ionic</h3>
+			<p>Light DOM: <i class="ion-ionic"></i></p>
+			<p>Shadow DOM: <span id="ionicShadowRoot"></span></p>
+		</div>
+	</body>
+	<script>
+		// Populate control shadow root.
+		document.getElementById("controlShadowRoot").createShadowRoot().innerHTML = '<i class="control control-inner"></i>';
+		// Populate test shadow roots.
+		document.getElementById("fontawesomeShadowRoot").createShadowRoot().innerHTML = '<i class="fa fa-user"></i>';
+		document.getElementById("ionicShadowRoot").createShadowRoot().innerHTML = '<i class="ion-ionic"></i>';
+
+	</script>
+</html>
