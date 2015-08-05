@@ -11,16 +11,17 @@
     "type": "git",
     "url": "https://github.com/tribex/shadowify.git"
   },
-  "main": "./bin/shadowify.js",
+  "main": "./lib/shadowify.js",
   "scripts": {
     "test": "./test/build-tests.sh && xdg-open ./test/index.html & exit 0"
   },
   "preferGlobal": "true",
   "directories": {
-    "bin": "./bin"
+    "bin": "./bin",
+    "lib": "./lib"
   },
   "bin": {
-    "shadowify": "./bin/shadowify.js"
+    "shadowify": "./bin/shadowify-cli.js"
   },
   "dependencies": {
     "minimist": "^1.1.2"

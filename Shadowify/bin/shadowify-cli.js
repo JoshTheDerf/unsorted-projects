@@ -28,6 +28,7 @@
 var fs = require("fs");
 var path = require("path");
 var argv = require("minimist")(process.argv.slice(2));
+var shadowify = require("../lib/shadowify");
 
 var exitWithHelp = function() {
   console.log([
@@ -73,7 +74,7 @@ inputText = (function() {
   try {
     return fs.readFileSync(path.resolve(inputPath), {encoding: "utf-8"});
   } catch (e) {
-    console.log("[ERR] Input file not found or unreadable: '"+inputPath+"', exiting.");
+    console.log("[ERR] Input file not found or unreadable: '" + inputPath + "', exiting.");
     console.log(e.message);
     process.exit(1);
   }
@@ -88,34 +89,11 @@ console.log([
   "         Deep Combinator: "+deepCombinator,
 ].join("\n"));
 
-outputText = (function() {
-  var substitution = "$1, * "+deepCombinator+" $1";
-
-  var processSubstitution = function(input) {
-    return substitution.split("$1").join(input);
-  }
-  
-  var regex = "(\\."+classPartial+".*?)\\s*?{";
-  return inputText.replace(new RegExp(regex, "g"), function(fullmatch, match1) {
-    var splitmatch = match1.split(",");
-    var result = [];
-    
-    if(splitmatch.length > 1) {
-      splitmatch.forEach(function(item) {
-        result.push(processSubstitution(item));
-      })
-      result = result.join(",");
-      //console.log(result);
-    } else {
-      result = processSubstitution(splitmatch[0])
-    }
-    return result+" {";
-  });
-})();
+outputText = shadowify(inputText, classPartial, deepCombinator);
 
 try {
   fs.writeFileSync(path.resolve(outputPath), outputText);
-  console.log("Conversion completed sucessfully. Output written to "+path.resolve(outputPath));
+  console.log("Conversion completed sucessfully. Output written to " + path.resolve(outputPath));
 } catch (e) {
   console.log("[ERR] Unable to access or create output file, exiting.");
   console.log(e.message);
