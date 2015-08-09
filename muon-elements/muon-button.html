@@ -30,27 +30,52 @@
       }
     </style>
     <div class="contentWrapper">
-      {{#if leftIcon}}
-        <i class="{{leftIcon}}"></i>
+      {{#if lefticon}}
+        <i id="leftIcon" class="{{lefticon}}"></i>
       {{/if}}
-      {{#if text}}
-        <span class="text">{{text}}</span>
+      {{#if value}}
+        <span id="value">{{value}}</span>
+      {{else}}
+        <span id="value"><content></content></span>
       {{/if}}
-      {{#if rightIcon}}
-        <i class="{{rightIcon}}"></i>
+      {{#if righticon}}
+        <i id="rightIcon" class="{{righticon}}"></i>
       {{/if}}
     </div>
   </template>
   <script>
     muon("muon-button", {
-      ractiveOptions: {},
-      data: {
-        leftIcon: "fa fa-user",
-        text: "Button",
-        rightIcon: "fa fa-times",
-      },
       muonCreated: function() {
-        this._Ractive.reset(this.data);
+        // TODO: Make this a core function of muon.
+        Object.defineProperty(this, 'lefticon', {
+          configurable: false,
+          get: function() {
+            return this._attrs.lefticon;
+          },
+          set: function(val) {
+            this._attrs.lefticon = val;
+          }
+        });
+        
+        Object.defineProperty(this, 'righticon', {
+          configurable: false,
+          get: function() {
+            return this._attrs.righticon;
+          },
+          set: function(val) {
+            this._attrs.righticon = val;
+          }
+        });
+        
+        Object.defineProperty(this, 'value', {
+          configurable: false,
+          get: function() {
+            return this._attrs.value;
+          },
+          set: function(val) {
+            this._attrs.value = val;
+          }
+        });
       }
     });
   </script>

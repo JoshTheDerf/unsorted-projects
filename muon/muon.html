@@ -1,4 +1,4 @@
-<!-- 
+<!--
  COPYRIGHT (c) 2015 Joshua Bemenderfer
 
  MIT License
@@ -20,7 +20,7 @@
  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
  LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 
 <!-- Don't read this file. Inside you will find only horror. Don't code when frazzled at 9:00 P.M. -->
@@ -45,10 +45,16 @@ var muon = function(name, properties) {
     prototype.muonTemplate = template;
     prototype.isRactive = !!elementDefinition.attributes.getNamedItem("ractive");
     prototype.isShadow = !!elementDefinition.attributes.getNamedItem("shadow");
+    
     prototype.createdCallback = function() {
       var skipCreate = false;
       if(this.muonPreCreated) skipCreate = this.muonPreCreated();
       
+      // Set up attributes
+      this._attrs = muon.getAttributesObject(this);
+      if(!this._attrs) this._attrs = {};
+
+      // Set up template
       if(!skipCreate && this.muonTemplate) {
         if(this.isRactive) {
           //Set up a ractive.js template.
@@ -61,13 +67,16 @@ var muon = function(name, properties) {
             } else {
               opts.el = opts.el ? opts.el : this;
             }
+            
             opts.template = opts.template ? opts.template : this.muonTemplate.innerHTML;
+            
+            // Set up Ractive Data variable. If not set, data is the element's attributes.
             if(dataPath) {
-              var refObject = muon.stringToObjRef(dataPath.nodeValue);
+              var objectRef = muon.stringToObjRef(dataPath.nodeValue);
               // Yes, I know nested inline conditionals are bad. :C
-              opts.data = refObject ? refObject : opts.data ? opts.data : this;
+              opts.data = objectRef ? objectRef : opts.data ? opts.data : this._attrs;
             } else {
-              opts.data = opts.data ? opts.data : this;
+              opts.data = opts.data ? opts.data : this._attrs;
             }
             opts.magic = opts.magic ? opts.magic : true;
             
@@ -82,6 +91,7 @@ var muon = function(name, properties) {
           this.appendChild(this.muonTemplate.content.cloneNode(true));
         }
       }
+      
       if(this.muonCreated) this.muonCreated();
     }
     
@@ -92,6 +102,16 @@ var muon = function(name, properties) {
       if(this.muonDetatched) this.muonDetatched();
     }
     prototype.attributeChangedCallback = function(attrName, oldVal, newVal) {
+      if(attrName == "ractive-data-path" && this._Ractive) {
+        var objectRef = muon.stringToObjRef(newVal);
+        
+        if(objectRef) {
+          this._Ractive.reset(objectRef);
+        }
+      } else {
+        this._attrs[attrName] = newVal;
+      }
+
       if(this.muonAttrChanged) this.muonAttrChanged(attrName, oldVal, newVal);
     }
     
@@ -157,6 +177,22 @@ muon._uncreatedElements = {};
     } else {
       return false;
     }
+  }
+  
+  // Sync attributes with the _attrs object. This syncing is one-way unless _attrs.setAttribute is used.
+  muon.getAttributesObject = function(element) {
+    var attrsObject = {};
+    
+    for(var i = 0; i < element.attributes.length; i++) {
+      var attr = element.attributes[i];
+      attrsObject[attr.name] = attr.value ? attr.value : false;
+    }
+    
+    attrsObject.setAttribute = function(attr, value) {
+      element.setAttribute(attr, value);
+    }
+    
+    return attrsObject;
   }
   
 })();

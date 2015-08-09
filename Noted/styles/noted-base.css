@@ -1,0 +1,87 @@
+#NOTED_CANVAS____ {
+  position: fixed !important;
+  top: 0px !important;
+  left: 0px !important;
+  z-index: 2147483646 !important;
+  cursor: default !important;
+  -webkit-user-select: none !important;
+  background-color: rgba(100,100,100,0.1) !important;
+  transition: all 300ms !important;
+}
+
+#NOTED_CANVAS____.NOTED_HIDE {
+  pointer-events: none !important;
+  background-color: transparent !important;
+}
+
+
+#NOTED_PANEL_____ {
+  position: fixed !important;
+  width: 48px !important;
+  left: -46px !important;
+  top: 0px !important;
+  bottom: 0px !important;
+  z-index: 2147483647 !important;
+  background-color: #444 !important;
+  
+  cursor: default !important;
+  -webkit-user-select: none !important;
+  transition: left 300ms !important;
+  transition-delay: 200ms !important;
+}
+
+#NOTED_PANEL_____:hover {
+  left: 0px !important;
+}
+
+
+#NOTED_ICON_____ {
+  width: 32px !important;
+  height: 32px !important;
+  margin: 4px !important;
+  padding: 4px !important;
+  background-color: #EEE !important;
+  border-radius: 50% !important;
+}
+
+#NOTED_PANEL_____ .NOTED_CONTROL {
+  box-sizing: border-box !important;
+  width: 48px !important;
+  height: 48px !important;
+  border-bottom: 1px solid #555 !important;
+  color: #EEE !important;
+  font-size: 30px !important;
+  transition: background-color 300ms !important;
+}
+
+#NOTED_PANEL_____ .NOTED_CONTROL:hover {
+  background-color: #555 !important;
+}
+
+#NOTED_PANEL_____ .NOTED_CONTROL:active, #NOTED_PANEL_____ .NOTED_CONTROL:focus {
+  background-color: #666 !important;
+}
+
+#NOTED_PANEL_____ input[type=color] {
+  background-color: transparent !important;
+  padding: 0px !important;
+  border: none !important;
+  width: 48px !important;
+  height: 48px !important;
+  border: none !important;
+  outline: none !important;
+}
+
+#NOTED_PANEL_____ input[type=number] {
+  background-color: transparent !important;
+  height: 24px !important;
+  font-size: 20px !important;
+  padding: 0px !important;
+  border: none !important;
+  outline: none !important;
+}
+  
+
+body.NOTED_HIDE, body.NOTED_HIDE * {
+  -webkit-user-select: none !important;
+}

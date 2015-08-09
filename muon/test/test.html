@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<link rel="import" href="../../muon-elements/muon-list.html"/>
 		<link rel="import" href="../../muon-elements/muon-button.html"/>
 		<link rel="import" href="../../muon-elements/muon-svg.html"/>
 		<link rel="import" href="../../muon-elements/muon-shadow-icons.html"/>
@@ -18,6 +19,15 @@
 				fill: #FFF !important;
 			}
 		</style>
+		<script>
+			var data = {
+				list: [
+					"TEST",
+					"Button1",
+					"Button2"
+				]
+			}
+		</script>
 	</head>
 	<body>
 		<!-- Inject shadow icons -->
@@ -25,20 +35,27 @@
 		
 		<!-- Test standard controls -->
 		<div class="controls">
-			<muon-button>
+			<muon-button id="testButton" lefticon="fa fa-times">
+				TestButton
 			</muon-button>
 		</div>
 		<!-- SVG Testing -->
 		<div class="svgs">
-			<muon-svg src="./semicolon.svg" class="muonsvg"></muon-svg>
 			<muon-svg class="muonsvg" id="muonsvgchange"></muon-svg>
 			<muon-svg src="./logo-old.svg" class="muonsvg"></muon-svg>
 		</div>
+		<div class="list">
+			<muon-list ractive-data-path="data">
+			</muon-list>
+		</div>
 		
 		<script>
-		setTimeout(function() {
-			document.getElementById("muonsvgchange").src = "./semicolon.svg";
-		}, 1000);
+			setTimeout(function() {
+				document.getElementById("muonsvgchange").src = "./semicolon.svg";
+			}, 1000);
+			
+			var testButton = document.getElementById("testButton");
+			testButton.lefticon = "fa fa-times-circle"
 		</script>
 	</body>
 </html>
