@@ -13,20 +13,31 @@ window.addEventListener("message", function(event) {
           window.postMessage({ type: "_NOTED_LOAD_CANVAS", payload: data[URLidentifier] }, "*");
         }
       });
+
     } else if(request.type == "_NOTED_SAVE_CANVAS") {
       var storObj = {};
       storObj[URLidentifier] = request.payload;
       chrome.storage.local.set(storObj);
+
+    } else if(request.type == "_NOTED_CAPTURE_PAGE") {
+      chrome.runtime.sendMessage(request, function(response) {
+        response.type = "_NOTED_SEND_PAGE_IMG";
+        window.postMessage(response, "*");
+      });
+    } else if(request.type == "_NOTED_CAPTURE_PAGE_COLOR") {
+      chrome.runtime.sendMessage(request, function(response) {
+        response.type = "_NOTED_SEND_PAGE_COLOR_IMG";
+        window.postMessage(response, "*");
+      });
     }
   }
 }, false);
-
 
 function loadScripts() {
   var s = document.createElement('script');
   
   // Load paper.js
-  s.src = chrome.extension.getURL("lib/paper-full.min.js");
+  s.src = chrome.extension.getURL("lib/paper-full.modified.js");
   s.onload = function() {
     this.parentNode.removeChild(this);
   };
@@ -46,8 +57,8 @@ function loadScripts() {
   s = document.createElement('script');
   // Load main paperscript project
   s.src = chrome.extension.getURL("scripts/page/paperscript/mainProject.js");
-  s.setAttribute('canvas', 'NOTED_CANVAS____');
-  s.setAttribute('type', 'text/paperscript');
+  s.setAttribute('canvas', 'NOTED_CANVAS_____');
+  s.setAttribute('type', 'text/noted_paperscript');
   
   s.onload = function() {
     this.parentNode.removeChild(this);

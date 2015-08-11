@@ -1,15 +1,14 @@
-#NOTED_CANVAS____ {
+#NOTED_CANVAS_____ {
   position: fixed !important;
   top: 0px !important;
   left: 0px !important;
-  z-index: 2147483646 !important;
-  cursor: default !important;
+  z-index: 2147403646 !important;
   -webkit-user-select: none !important;
-  background-color: rgba(100,100,100,0.1) !important;
+  background-color: rgba(100,100,100,0.1); /* No important */
   transition: all 300ms !important;
 }
 
-#NOTED_CANVAS____.NOTED_HIDE {
+#NOTED_CANVAS_____.NOTED_HIDE {
   pointer-events: none !important;
   background-color: transparent !important;
 }
@@ -17,41 +16,69 @@
 
 #NOTED_PANEL_____ {
   position: fixed !important;
-  width: 48px !important;
-  left: -46px !important;
+  width: 40px !important;
+  left: -36px !important;
   top: 0px !important;
   bottom: 0px !important;
-  z-index: 2147483647 !important;
+  z-index: 2147403647 !important;
   background-color: #444 !important;
   
   cursor: default !important;
   -webkit-user-select: none !important;
   transition: left 300ms !important;
   transition-delay: 200ms !important;
+  text-align: center !important;
 }
 
 #NOTED_PANEL_____:hover {
   left: 0px !important;
 }
 
+#NOTED_PANEL_____.NOTED_INACTIVE {
+  left: -40px !important;
+}
 
 #NOTED_ICON_____ {
-  width: 32px !important;
-  height: 32px !important;
+  width: 20px !important;
+  height: 20px !important;
   margin: 4px !important;
   padding: 4px !important;
   background-color: #EEE !important;
   border-radius: 50% !important;
+  box-shadow: 0px 0px 2px #FFF !important;
+  transition: all 500ms !important;
+}
+
+#NOTED_PANEL_____.NOTED_DEACTIVATED #NOTED_ICON_____ {
+  animation: NOTED_ICON_BLINK 1s infinite alternate !important;
+}
+
+#NOTED_PANEL_____.NOTED_DEACTIVATED #NOTED_ICON_____:hover {
+  animation: none !important;
+  opacity: 0.9 !important;
+}
+
+@keyframes NOTED_ICON_BLINK {
+  from {
+    opacity: 0.5;
+    box-shadow: 0px 0px 0px;
+  }
+  to {
+    opacity: 0.9;
+    box-shadow: 0px 0px 5px #FFF;
+  }
 }
 
 #NOTED_PANEL_____ .NOTED_CONTROL {
   box-sizing: border-box !important;
-  width: 48px !important;
-  height: 48px !important;
+  width: 40px !important;
+  height: 40px !important;
   border-bottom: 1px solid #555 !important;
   color: #EEE !important;
   font-size: 30px !important;
-  transition: background-color 300ms !important;
+  opacity: 1 !important;
+  transition: background-color, opacity !important;
+  transition-duration: 300ms !important;
 }
 
 #NOTED_PANEL_____ .NOTED_CONTROL:hover {
@@ -62,12 +89,17 @@
   background-color: #666 !important;
 }
 
+#NOTED_PANEL_____.NOTED_DEACTIVATED .NOTED_CONTROL {
+  pointer-events: none !important;
+  opacity: 0.3 !important;
+}
+
 #NOTED_PANEL_____ input[type=color] {
   background-color: transparent !important;
   padding: 0px !important;
   border: none !important;
-  width: 48px !important;
-  height: 48px !important;
+  width: 40px !important;
+  height: 40px !important;
   border: none !important;
   outline: none !important;
 }
@@ -75,11 +107,44 @@
 #NOTED_PANEL_____ input[type=number] {
   background-color: transparent !important;
   height: 24px !important;
-  font-size: 20px !important;
+  font-size: 15px !important;
   padding: 0px !important;
   border: none !important;
   outline: none !important;
 }
+
+#NOTED_PREVIEW_____ {
+  position: absolute !important;
+  left: 0px !important;
+  bottom: 40px !important;
+  display: block !important;
+}
+
+#NOTED_PREVIEW_____:hover img[src] {
+  left: 48px !important;
+  background-color: #EEE !important;
+  padding: 5px !important;
+  border-radius: 4px !important;
+  width: auto !important;
+  height: auto !important;
+  box-shadow: 0px 0px 6px #000 !important;
+  max-width: 90vw !important;
+  max-height: 90vh !important;
+}
+
+#NOTED_PREVIEW_____ img:not([src]) {
+  display: none;
+}
+
+#NOTED_PREVIEW_____ img {
+  width: 40px !important;
+  height: 40px !important;
+  left: 0px !important;
+  bottom: 0px !important;
+  position: absolute !important;
+  transition: all 300ms, background-color 150ms 0ms, box-shadow 150ms 0ms !important;
+}
+
   
 
 body.NOTED_HIDE, body.NOTED_HIDE * {
